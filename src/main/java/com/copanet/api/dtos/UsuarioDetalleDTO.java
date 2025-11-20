@@ -1,25 +1,24 @@
 package com.copanet.api.dtos;
 
-public class UsuarioListadoDTO {
+public class UsuarioDetalleDTO {
 
     private Integer usuarioId;
     private String identificacion;
     private String nombre;
+    private String email;
     private String rol;
-    private String estado;
 
-    public UsuarioListadoDTO(Integer usuarioId, String identificacion, String nombre, String rol, String estado) {
+    public UsuarioDetalleDTO(Integer usuarioId, String identificacion, String nombre, String email, String rol) {
         this.usuarioId = usuarioId;
         this.identificacion = identificacion;
         this.nombre = nombre;
+        this.email = email;
         this.rol = rol;
-        this.estado = estado;
     }
 
     public Integer getUsuarioId() { return usuarioId; }
     public String getIdentificacion() { return identificacion; }
     public String getNombre() { return nombre; }
+    public String getEmail() { return email; }
     public String getRol() { return rol; }
-    public String getEstado() { return estado; }
 }
-
