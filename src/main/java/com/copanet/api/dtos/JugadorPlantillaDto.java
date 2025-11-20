@@ -6,6 +6,7 @@ public class JugadorPlantillaDto {
     private String nombre;
     private String identificacion;
     private String posicion;
+    private Integer camiseta;   // <- nuevo campo para enviar al front
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -18,4 +19,7 @@ public class JugadorPlantillaDto {
 
     public String getPosicion() { return posicion; }
     public void setPosicion(String posicion) { this.posicion = posicion; }
+
+    public Integer getCamiseta() { return camiseta; }
+    public void setCamiseta(Integer camiseta) { this.camiseta = camiseta; }
 }

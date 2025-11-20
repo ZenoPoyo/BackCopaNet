@@ -14,9 +14,12 @@ import java.util.stream.Collectors;
 public class SolicitudPlantillaService {
 
     private final SolicitudPlantillaRepository repository;
+    private final BitacoraService bitacoraService;
 
-    public SolicitudPlantillaService(SolicitudPlantillaRepository repository) {
+    public SolicitudPlantillaService(SolicitudPlantillaRepository repository,
+                                     BitacoraService bitacoraService) {
         this.repository = repository;
+        this.bitacoraService = bitacoraService;
     }
 
     // --------------------------------------------------------
@@ -35,11 +38,11 @@ public class SolicitudPlantillaService {
             dto.setAccion(s.getAccion());
 
             dto.setJugador(
-                s.getJugador() != null ? s.getJugador().getNombre() : "N/A"
+                    s.getJugador() != null ? s.getJugador().getNombre() : "N/A"
             );
 
             dto.setFecha(
-                s.getCreadoEn() != null ? s.getCreadoEn().format(fmt) : ""
+                    s.getCreadoEn() != null ? s.getCreadoEn().format(fmt) : ""
             );
 
             dto.setDetalle(s.getComentario());
@@ -61,6 +64,27 @@ public class SolicitudPlantillaService {
 
         repository.save(sol);
 
+        // ---- Registrar en bitácora ----
+        Integer usuarioId = null;
+        if (sol.getSolicitante() != null) {
+            // ⚠️ Usa el getter REAL de tu entidad Usuario.
+            // Si tu clase Usuario tiene getId(), esto está bien.
+            // Si se llama distinto (por ejemplo getUsuarioId()), cámbialo aquí.
+            usuarioId = sol.getSolicitante().getId();
+        }
+
+        try {
+            bitacoraService.registrarEvento(
+                    usuarioId,
+                    "APROBAR",
+                    "SolicitudPlantilla",
+                    "SolicitudId=" + sol.getSolicitudId() + " | Acción=" + sol.getAccion()
+            );
+        } catch (Exception e) {
+            // No queremos romper la aprobación si falla la bitácora
+            e.printStackTrace();
+        }
+
         return convertirDto(sol);
     }
 
@@ -75,6 +99,24 @@ public class SolicitudPlantillaService {
         sol.setResueltoEn(LocalDateTime.now());
 
         repository.save(sol);
+
+        // ---- Registrar en bitácora ----
+        Integer usuarioId = null;
+        if (sol.getSolicitante() != null) {
+            // Igual que arriba: usa el getter correcto
+            usuarioId = sol.getSolicitante().getId();
+        }
+
+        try {
+            bitacoraService.registrarEvento(
+                    usuarioId,
+                    "RECHAZAR",
+                    "SolicitudPlantilla",
+                    "SolicitudId=" + sol.getSolicitudId() + " | Acción=" + sol.getAccion()
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return convertirDto(sol);
     }

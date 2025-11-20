@@ -23,7 +23,10 @@ public class Jugador {
     @Column(name = "Estado", nullable = false)
     private String estado;
 
-    // otros campos que tengas en la tabla se pueden agregar luego
+    @Column(name = "Camiseta")       // <- nuevo campo mapeado a la columna Camiseta
+    private Integer camiseta;
+
+    // GETTERS / SETTERS
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -31,27 +34,15 @@ public class Jugador {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getIdentificacion() {
-        return identificacion;
-    }
+    public String getIdentificacion() { return identificacion; }
+    public void setIdentificacion(String identificacion) { this.identificacion = identificacion; }
 
-    public void setIdentificacion(String identificacion) {
-        this.identificacion = identificacion;
-    }
+    public String getPosicion() { return posicion; }
+    public void setPosicion(String posicion) { this.posicion = posicion; }
 
-    public String getPosicion() {
-        return posicion;
-    }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public void setPosicion(String posicion) {
-        this.posicion = posicion;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
+    public Integer getCamiseta() { return camiseta; }
+    public void setCamiseta(Integer camiseta) { this.camiseta = camiseta; }
 }

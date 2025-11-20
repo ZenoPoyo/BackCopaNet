@@ -22,10 +22,11 @@ public class EquipoPlantillaService {
 
         return jugadores.stream().map(j -> {
             JugadorPlantillaDto dto = new JugadorPlantillaDto();
-            dto.setId(j.getId());                   // OK (getter existe)
-            dto.setNombre(j.getNombre());           // OK (getter existe)
-            dto.setIdentificacion(j.getIdentificacion()); // USA el getter que agregaste
-            dto.setPosicion(j.getPosicion());       // USA el getter que agregaste
+            dto.setId(j.getId());
+            dto.setNombre(j.getNombre());
+            dto.setIdentificacion(j.getIdentificacion());
+            dto.setPosicion(j.getPosicion());
+            dto.setCamiseta(j.getCamiseta());   // <- mandamos la camiseta al front
             return dto;
         }).collect(Collectors.toList());
     }

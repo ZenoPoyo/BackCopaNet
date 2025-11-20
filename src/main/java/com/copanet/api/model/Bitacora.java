@@ -32,60 +32,24 @@ public class Bitacora {
     @JoinColumn(name = "UsuarioId", insertable = false, updatable = false)
     private Usuario usuario;
 
-    public Long getBitacoraId() {
-        return bitacoraId;
-    }
+    public Long getBitacoraId() { return bitacoraId; }
+    public void setBitacoraId(Long bitacoraId) { this.bitacoraId = bitacoraId; }
 
-    public void setBitacoraId(Long bitacoraId) {
-        this.bitacoraId = bitacoraId;
-    }
+    public LocalDateTime getFecha() { return fecha; }
+    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
 
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
+    public Integer getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(Integer usuarioId) { this.usuarioId = usuarioId; }
 
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
+    public String getAccion() { return accion; }
+    public void setAccion(String accion) { this.accion = accion; }
 
-    public Integer getUsuarioId() {
-        return usuarioId;
-    }
+    public String getEntidad() { return entidad; }
+    public void setEntidad(String entidad) { this.entidad = entidad; }
 
-    public void setUsuarioId(Integer usuarioId) {
-        this.usuarioId = usuarioId;
-    }
+    public String getDetalle() { return detalle; }
+    public void setDetalle(String detalle) { this.detalle = detalle; }
 
-    public String getAccion() {
-        return accion;
-    }
-
-    public void setAccion(String accion) {
-        this.accion = accion;
-    }
-
-    public String getEntidad() {
-        return entidad;
-    }
-
-    public void setEntidad(String entidad) {
-        this.entidad = entidad;
-    }
-
-    public String getDetalle() {
-        return detalle;
-    }
-
-    public void setDetalle(String detalle) {
-        this.detalle = detalle;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 }
-
