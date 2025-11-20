@@ -3,6 +3,8 @@ package com.copanet.api.service;
 import com.copanet.api.dtos.BitacoraDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.copanet.api.model.Bitacora;
+
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -62,4 +64,27 @@ public class BitacoraService {
 
         return lista;
     }
+
+    public void guardar(Bitacora b) throws Exception {
+        String sql = """
+            INSERT INTO Bitacora (Fecha, UsuarioId, Accion, Entidad, Detalle)
+            VALUES (SYSDATETIME(), ?, ?, ?, ?)
+        """;
+
+        try (Connection con = dataSource.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            if (b.getUsuarioId() != null)
+                stmt.setInt(1, b.getUsuarioId());
+            else
+                stmt.setNull(1, Types.INTEGER);
+
+            stmt.setString(2, b.getAccion());
+            stmt.setString(3, b.getEntidad());
+            stmt.setString(4, b.getDetalle());
+
+            stmt.executeUpdate();
+        }
+    }
+
 }

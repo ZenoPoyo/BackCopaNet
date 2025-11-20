@@ -30,6 +30,7 @@ public class BitacoraController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
 }
 
 

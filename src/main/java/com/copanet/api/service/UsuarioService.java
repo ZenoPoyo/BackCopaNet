@@ -4,6 +4,9 @@ import com.copanet.api.dtos.CrearUsuarioDTO;
 import com.copanet.api.dtos.UsuarioListadoDTO;
 import com.copanet.api.dtos.ModificarUsuarioDTO;
 import com.copanet.api.dtos.UsuarioDetalleDTO;
+import com.copanet.api.service.BitacoraService;
+import com.copanet.api.model.Bitacora;
+
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,10 @@ public class UsuarioService {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private BitacoraService bitacoraService;
+
 
     // ===========================================
     //  CREAR USUARIO (usa stored procedure)
@@ -215,6 +222,46 @@ public class UsuarioService {
             stmt.execute();
         }
     }
+
+    public void actualizarEstadoUsuario(int usuarioId, String nuevoEstado, int adminId) throws Exception {
+
+        String sqlNombre = "SELECT Nombre FROM Usuario WHERE UsuarioId = ?";
+
+            String nombreUsuario = "";
+
+            try (Connection con = dataSource.getConnection();
+                PreparedStatement st = con.prepareStatement(sqlNombre)) {
+                st.setInt(1, usuarioId);
+                ResultSet rs = st.executeQuery();
+                if (rs.next()) {
+                    nombreUsuario = rs.getString("Nombre");
+                }
+            }
+
+        String sql = """
+            UPDATE Usuario
+            SET Estado = ?
+            WHERE UsuarioId = ?
+        """;
+
+        try (Connection con = dataSource.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, nuevoEstado);
+            stmt.setInt(2, usuarioId);
+            stmt.executeUpdate();
+        }
+
+        // Registrar auditoría después
+        Bitacora b = new Bitacora();
+        b.setUsuarioId(adminId);
+        b.setAccion(nuevoEstado.equals("ACTIVO") ? "Aceptar" : "Rechazar");
+        b.setEntidad("Usuario");
+        b.setDetalle("Se " + (nuevoEstado.equals("ACTIVO") ? "aceptó" : "rechazó") + " la solicitud del usuario " + nombreUsuario + " (ID: " + usuarioId + ")");
+
+        bitacoraService.guardar(b);
+    }
+
 
 
 
