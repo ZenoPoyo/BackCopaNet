@@ -52,71 +52,68 @@ public class SolicitudPlantillaService {
     }
 
 
-    // --------------------------------------------------------
-    // 2. MARCAR COMO APROBADA
-    // --------------------------------------------------------
-    public SolicitudPlantillaDto aprobar(Integer id) {
-        SolicitudPlantilla sol = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+// --------------------------------------------------------
+// 2. MARCAR COMO APROBADA
+// --------------------------------------------------------
+public SolicitudPlantillaDto aprobar(Integer id) {
+    SolicitudPlantilla sol = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
-        sol.setEstado("APROBADA");
-        sol.setResueltoEn(LocalDateTime.now());
+    sol.setEstado("APROBADA");
+    sol.setResueltoEn(LocalDateTime.now());
 
-        repository.save(sol);
+    repository.save(sol);
 
-        // ---- Registrar en bitácora ----
-        Integer usuarioId = null;
-        if (sol.getSolicitante() != null) {
-
-            usuarioId = sol.getSolicitante().getId();
-        }
-
-        try {
-            bitacoraService.registrarEvento(
-                    usuarioId,
-                    "APROBAR",
-                    "Equipo",
-                    "SolicitudId=" + sol.getSolicitudId() + " | Acción=" + sol.getAccion()
-            );
-        } catch (Exception e) {
-            // No queremos romper la aprobación si falla la bitácora
-            e.printStackTrace();
-        }
-
-        return convertirDto(sol);
+    Integer usuarioId = null;
+    if (sol.getSolicitante() != null) {
+        usuarioId = sol.getSolicitante().getId(); // o getUsuarioId(), según tu entidad
     }
 
-    // --------------------------------------------------------
-    // 3. MARCAR COMO RECHAZADA
-    // --------------------------------------------------------
-    public SolicitudPlantillaDto rechazar(Integer id) {
-        SolicitudPlantilla sol = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
-
-        sol.setEstado("RECHAZADA");
-        sol.setResueltoEn(LocalDateTime.now());
-
-        repository.save(sol);
-
-        // ---- Registrar en bitácora ----
-        Integer usuarioId = null;
-        if (sol.getSolicitante() != null) {
-            usuarioId = sol.getSolicitante().getId();
-        }
-
-        try {
-            bitacoraService.registrarEvento(
-                    usuarioId,
-                    "RECHAZAR",
-                    "Equipo",
-                    "SolicitudId=" + sol.getSolicitudId() + " | Acción=" + sol.getAccion()
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return convertirDto(sol);
+    try {
+        bitacoraService.registrarEvento(
+                usuarioId,
+                "APROBAR",
+                "SolicitudPlantilla",  // 👈 AQUI: SIEMPRE SolicitudPlantilla
+                "SolicitudId=" + sol.getSolicitudId() + " | Acción=" + sol.getAccion()
+        );
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return convertirDto(sol);
+}
+
+// --------------------------------------------------------
+// 3. MARCAR COMO RECHAZADA
+// --------------------------------------------------------
+public SolicitudPlantillaDto rechazar(Integer id) {
+    SolicitudPlantilla sol = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+    sol.setEstado("RECHAZADA");
+    sol.setResueltoEn(LocalDateTime.now());
+
+    repository.save(sol);
+
+    Integer usuarioId = null;
+    if (sol.getSolicitante() != null) {
+        usuarioId = sol.getSolicitante().getId(); // o getUsuarioId()
+    }
+
+    try {
+        bitacoraService.registrarEvento(
+                usuarioId,
+                "RECHAZAR",
+                "SolicitudPlantilla",  // 👈 IGUAL AQUI
+                "SolicitudId=" + sol.getSolicitudId() + " | Acción=" + sol.getAccion()
+        );
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return convertirDto(sol);
+}
+
 
     // --------------------------------------------------------
     // MÉTODO DE APOYO: convertir entidad → DTO
