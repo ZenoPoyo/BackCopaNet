@@ -26,7 +26,7 @@ public class EquipoPlantillaService {
             dto.setNombre(j.getNombre());
             dto.setIdentificacion(j.getIdentificacion());
             dto.setPosicion(j.getPosicion());
-            dto.setCamiseta(j.getCamiseta());   // <- mandamos la camiseta al front
+            dto.setCamiseta(j.getCamiseta());   
             return dto;
         }).collect(Collectors.toList());
     }

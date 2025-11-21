@@ -31,7 +31,7 @@ public class SolicitudPlantillaService {
         return repository.findByResueltoEnIsNull().stream().map(s -> {
             SolicitudPlantillaDto dto = new SolicitudPlantillaDto();
 
-            dto.setId(s.getSolicitudId()); // <-- IMPORTANTE para el frontend
+            dto.setId(s.getSolicitudId()); 
 
             dto.setReferencia("#" + String.format("%07d", s.getSolicitudId()));
             dto.setDte(s.getSolicitante().getNombre());
@@ -59,7 +59,7 @@ public class SolicitudPlantillaService {
         SolicitudPlantilla sol = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
-        sol.setEstado("APROBADA");
+        sol.setEstado("Aprobar");
         sol.setResueltoEn(LocalDateTime.now());
 
         repository.save(sol);
@@ -67,9 +67,7 @@ public class SolicitudPlantillaService {
         // ---- Registrar en bitácora ----
         Integer usuarioId = null;
         if (sol.getSolicitante() != null) {
-            // ⚠️ Usa el getter REAL de tu entidad Usuario.
-            // Si tu clase Usuario tiene getId(), esto está bien.
-            // Si se llama distinto (por ejemplo getUsuarioId()), cámbialo aquí.
+
             usuarioId = sol.getSolicitante().getId();
         }
 
@@ -77,7 +75,7 @@ public class SolicitudPlantillaService {
             bitacoraService.registrarEvento(
                     usuarioId,
                     "APROBAR",
-                    "SolicitudPlantilla",
+                    "Equipo",
                     "SolicitudId=" + sol.getSolicitudId() + " | Acción=" + sol.getAccion()
             );
         } catch (Exception e) {
@@ -95,7 +93,7 @@ public class SolicitudPlantillaService {
         SolicitudPlantilla sol = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
-        sol.setEstado("RECHAZADA");
+        sol.setEstado("Rechazar");
         sol.setResueltoEn(LocalDateTime.now());
 
         repository.save(sol);
@@ -111,7 +109,7 @@ public class SolicitudPlantillaService {
             bitacoraService.registrarEvento(
                     usuarioId,
                     "RECHAZAR",
-                    "SolicitudPlantilla",
+                    "Equipo",
                     "SolicitudId=" + sol.getSolicitudId() + " | Acción=" + sol.getAccion()
             );
         } catch (Exception e) {
