@@ -59,7 +59,7 @@ public class SolicitudPlantillaService {
         SolicitudPlantilla sol = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
-        sol.setEstado("Aprobar");
+        sol.setEstado("APROBADA");
         sol.setResueltoEn(LocalDateTime.now());
 
         repository.save(sol);
@@ -93,7 +93,7 @@ public class SolicitudPlantillaService {
         SolicitudPlantilla sol = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
-        sol.setEstado("Rechazar");
+        sol.setEstado("RECHAZADA");
         sol.setResueltoEn(LocalDateTime.now());
 
         repository.save(sol);
@@ -101,7 +101,6 @@ public class SolicitudPlantillaService {
         // ---- Registrar en bitácora ----
         Integer usuarioId = null;
         if (sol.getSolicitante() != null) {
-            // Igual que arriba: usa el getter correcto
             usuarioId = sol.getSolicitante().getId();
         }
 
